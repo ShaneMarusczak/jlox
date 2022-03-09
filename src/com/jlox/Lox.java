@@ -55,6 +55,11 @@ public class Lox {
         report(line, "", message);
     }
 
+    static void fatalError(int line, String message) {
+        report(line, "", message);
+        System.exit(66);
+    }
+
     private static void report(int line, String where,
                                String message) {
         System.err.println(

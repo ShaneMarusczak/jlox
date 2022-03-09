@@ -82,15 +82,17 @@ class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
                 } else if(match('*')){
-                    //multiline comments go until */
                     for(;;) {
+                        if(isAtEnd()) {
+                            Lox.fatalError(line, "Unclosed multiline comment");
+                        }
+                        // Multiline comments go until */
                         if (peek() == '*' && peekNext() == '/') {
                             //consume the * and /
                             advance();
                             advance();
                             break;
                         }
-                        if(isAtEnd()) Lox.error(line, "Unclosed multiline comment");
                         if (peek() == '\n') line++;
                         advance();
                     }
@@ -118,7 +120,7 @@ class Scanner {
                     identifier();
                 }
                 else {
-                    Lox.error(line, "Unexpected character.");
+                    Lox.fatalError(line, "Unexpected character.");
                 }
                 break;
         }
@@ -169,8 +171,7 @@ class Scanner {
         }
 
         if (isAtEnd()) {
-            Lox.error(line, "Unterminated string.");
-            return;
+            Lox.fatalError(line, "Unterminated string.");
         }
 
         // The closing ".
